@@ -29,7 +29,7 @@ function Home() {
     <div className="hero min-h-screen bg-base-200">
       <header className="hero-content text-center">
         <div className='max-w-lg font-bold'>
-          <h1 className='text-5xl mb-10'>Mortgage Simulator</h1>
+          <h1 className='text-5xl mb-10'>Mortgage Simulator Test</h1>
           <p className='mb-5'>
             How long will it take to pay off your mortgage? Simulate different repayment goals and different interest rates to see what happens to your loan duration.
           </p>
