@@ -34,14 +34,21 @@ export const options = {
   },
 };
 
-const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Number): Array<Number> => {
+const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Number, repaymentFrequency: string): Array<Number> => {
 	let balance: Number = totalBorrowed;
 	let days = 0;
   const returnData: Array<Number> = [];
   returnData.push(balance);
+  
+  let repaymentInterval = 30;
+  if (repaymentFrequency === 'weekly') { 
+    repaymentInterval = 7
+  } else if (repaymentFrequency === 'fortnightly') {
+    repaymentInterval = 14;
+  }
 
   while (balance > 0) {
-    if (days % 14 === 0) {
+    if (days % repaymentInterval === 0) {
       balance = +balance - repayAmount;
     }
     balance = Math.round((+balance + ((+balance * +interestRate / 100) / 365)) * 100) / 100;
@@ -61,7 +68,7 @@ const makeData = (props: Props) => {
   const datasets = [];
   console.log(props.interest);
   for (let i = 0; i < props.scenarios; i++) {
-    const series = makeSeries(props.repayments, props.principle, props.interest + i);
+    const series = makeSeries(props.repayments, props.principle, props.interest + i, props.repaymentFrequency);
     labels = series.map((val, index) => ('Year ' + (index + 1)));
     datasets.push({
       label: `${props.interest + i}% Interest Rate`,

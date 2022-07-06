@@ -9,18 +9,44 @@ function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loanAmount, setLoanAmount] = useState(searchParams.get('principle') || 0);
   const [interestRate, setInterestRate] = useState(searchParams.get('interest') || 0);
-  const [repayments, setRepayments] = useState(searchParams.get('repayments') || 0);
-  const [repaymentFrequency, setRepaymentFrequency] = useState(searchParams.get('repayment_frequency') || 'fortnightly');
+  const [repayments, setRepayments] = useState(searchParams.get('repayments') || '');
+  const [repaymentsOverriden, setRepaymentsOverriden] = useState(false);
+  const [repaymentFrequency, setRepaymentFrequency] = useState(searchParams.get('repayment_frequency') || '');
 
-  const calculateRepayments = (): number => {
-    if (repayments) {
-      return +repayments;
+  const calculateRepayments = (): number|string => {
+    if (repayments || repaymentsOverriden) {
+      return repayments;
     }
     if (!loanAmount || !interestRate || !repaymentFrequency) {
-      return 0;
+      return '';
+    }
+    
+    let repaymentInterval = 12;
+    if (repaymentFrequency === 'weekly') { 
+      repaymentInterval = 52
+    } else if (repaymentFrequency === 'fortnightly') {
+      repaymentInterval = 26;
+    }
+    console.log(repaymentFrequency, repaymentInterval);
+
+    const principal = +loanAmount;
+    const interest = +interestRate / 100 / repaymentInterval;
+    const loanYears = 25;
+    var payments = loanYears * repaymentInterval;
+
+    // Now compute the monthly payment figure, using esoteric math.
+    var x = Math.pow(1 + interest, payments);
+    var monthly = (principal * x * interest)/(x-1);
+
+    // Check that the result is a finite number. If so, display the results.
+    if (!isNaN(monthly) && 
+        (monthly !== Number.POSITIVE_INFINITY) &&
+        (monthly !== Number.NEGATIVE_INFINITY)) {
+
+        return Math.round(monthly);
     }
 
-    return 100;
+    return 0;
   };
 
   const handleBack = (e: FormEvent<HTMLButtonElement>): void => {
@@ -110,8 +136,9 @@ function Home() {
                   placeholder=""
                   required
                   className="input input-bordered w-full max-w-xs"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setRepayments(+e.target.value)}}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setRepayments(e.target.value)}}
                   value={calculateRepayments()}
+                  onFocus={(e: React.ChangeEvent<HTMLInputElement>) => {setRepaymentsOverriden(true)}}
                 />
               </label>
               <div className="mt-10 flex flex-row justify-between">
