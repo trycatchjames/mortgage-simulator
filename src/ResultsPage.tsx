@@ -25,7 +25,7 @@ function ResultsPage() {
     return <div className="App">Not enough data</div>
   }
   return (
-    <div className='bg-base-100'>
+    <div>
       <div className="hero">
         <div className="hero-content text-center">
           <div className="max-w-lg">
