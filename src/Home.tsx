@@ -1,5 +1,6 @@
 import React, { FormEvent, useState } from 'react';
 import { createSearchParams, useSearchParams, useNavigate } from "react-router-dom";
+import NumberFormat from 'react-number-format';
 
 function Home() {
   const navigate = useNavigate();
@@ -10,6 +11,17 @@ function Home() {
   const [interestRate, setInterestRate] = useState(searchParams.get('interest') || 0);
   const [repayments, setRepayments] = useState(searchParams.get('repayments') || 0);
   const [repaymentFrequency, setRepaymentFrequency] = useState(searchParams.get('repayment_frequency') || 'fortnightly');
+
+  const calculateRepayments = (): number => {
+    if (repayments) {
+      return +repayments;
+    }
+    if (!loanAmount || !interestRate || !repaymentFrequency) {
+      return 0;
+    }
+
+    return 100;
+  };
 
   const handleBack = (e: FormEvent<HTMLButtonElement>): void => {
     e.preventDefault();
@@ -30,7 +42,7 @@ function Home() {
     const params = {
       principle: `${loanAmount}`,
       interest: `${interestRate}`,
-      repayments: `${repayments}`,
+      repayments: `${calculateRepayments()}`,
       repayment_frequency: repaymentFrequency,
     };
     navigate({
@@ -61,26 +73,35 @@ function Home() {
             <form onSubmit={handleSubmit}>
               <label className='label'>
                 Loan amount
-                <input
-                  type="number"
-                  placeholder=""
-                  required
+                <NumberFormat
                   className={`input input-bordered w-full max-w-xs ${submitted && !loanAmount ? 'input-bordered input-error' : ''}`}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setLoanAmount(+e.target.value)}}
+                  thousandSeparator={true} prefix={'$'}
+                  onValueChange={(value) => {setLoanAmount(value.floatValue!)}}
                   defaultValue={loanAmount || ''}
                 />
               </label>
               <label className='label'>
                 Interest rate
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder=""
-                  required
+                <NumberFormat
                   className={`input input-bordered w-full max-w-xs ${submitted && !interestRate ? 'input-bordered input-error' : ''}`}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setInterestRate(+e.target.value)}}
+                  thousandSeparator={true}
+                  suffix={'%'}
+                  onValueChange={(value) => {setInterestRate(value.floatValue!)}}
                   defaultValue={interestRate || ''}
                 />
+              </label>
+              <label className='label'>
+                Repayment frequency
+                <select 
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setRepaymentFrequency(e.target.value)}}
+                  className="select select-bordered w-full max-w-xs"
+                  required
+                >
+                  <option value=""></option>
+                  <option value="weekly">Weekly</option>
+                  <option value="fortnightly">Fortnightly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
               </label>
               <label className='label'>
                 Repayments
@@ -90,20 +111,8 @@ function Home() {
                   required
                   className="input input-bordered w-full max-w-xs"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setRepayments(+e.target.value)}}
-                  defaultValue={repayments || ''}
+                  value={calculateRepayments()}
                 />
-              </label>
-              <label className='label'>
-                Repayment frequency
-                <select 
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setRepaymentFrequency(e.target.value)}}
-                  className="select select-bordered w-full max-w-xs"
-                  defaultValue={repaymentFrequency}
-                >
-                  <option value="weekly">Weekly</option>
-                  <option value="fortnightly">Fortnightly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
               </label>
               <div className="mt-10 flex flex-row justify-between">
               <button className='btn btn-outline btn-default' onClick={handleBack}>Back</button>
