@@ -116,7 +116,7 @@ function Home() {
                 />
               </label>
               <label className='label'>
-                Repayment frequency
+                Terms
                 <select 
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setRepaymentFrequency(e.target.value)}}
                   className="select select-bordered w-full max-w-xs"
