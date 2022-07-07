@@ -19,7 +19,7 @@ export default function MortgageTable(props: Props) {
           <thead>
             <tr>
               <th>Year</th>
-              <th className='text-right'>End of Year Balance</th>
+              <th className='text-right'>Start of Year Balance</th>
               {/* <th>Interest Rate</th>
               <th>Yearly Repayments</th> */}
             </tr>

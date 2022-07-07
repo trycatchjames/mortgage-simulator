@@ -14,7 +14,6 @@ function Home() {
   const [repaymentFrequency, setRepaymentFrequency] = useState(searchParams.get('repayment_frequency') || '');
 
   const calculateRepayments = (): number => {
-    console.log(repayments || repaymentsOverriden);
     if (repayments && repaymentsOverriden) {
       return +repayments;
     }
