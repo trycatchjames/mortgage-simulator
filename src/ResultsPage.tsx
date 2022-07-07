@@ -30,7 +30,7 @@ function ResultsPage() {
       <div className="hero">
         <div className="hero-content text-center">
           <div className="max-w-lg">
-            <h1 className="text-3xl font-bold">${principle.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} at {interest}%</h1>
+            <h1 className="text-3xl font-bold">&#127968; ${principle.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} at {interest}%</h1>
             <p className="py-6">
               Repayments of ${repayments.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} {repaymentFrequency}.
             </p>

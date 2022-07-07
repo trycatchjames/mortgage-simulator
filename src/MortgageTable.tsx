@@ -11,6 +11,7 @@ interface Props {
 }
 
 export default function MortgageTable(props: Props) {
+  const currentYear = new Date().getFullYear();
   return (
     <>
       <div className="overflow-x-auto">
@@ -18,7 +19,7 @@ export default function MortgageTable(props: Props) {
           <thead>
             <tr>
               <th>Year</th>
-              <th className='text-right pr-16'>Balance</th>
+              <th className='text-right'>End of Year Balance</th>
               {/* <th>Interest Rate</th>
               <th>Yearly Repayments</th> */}
             </tr>
@@ -26,7 +27,7 @@ export default function MortgageTable(props: Props) {
           <tbody>
             {makeSeries(props.repayments, props.principle, props.interest, props.repaymentFrequency).map((balance, i) => (
               <tr key={i}>
-                <th>{i+1}</th>
+                <th>{currentYear + i - 1} - Year {i+1}</th>
                 <td className='text-right font-mono'><CurrencyFormatter value={+balance} /></td>
                 {/* <td></td>
                 <td></td> */}

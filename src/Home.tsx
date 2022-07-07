@@ -80,7 +80,7 @@ function Home() {
     <div className="hero min-h-screen">
       <header className="hero-content text-center">
         <div className='max-w-lg font-bold'>
-          <h1 className='text-5xl mb-10'>Mortgage Simulator</h1>
+          <h1 className='text-5xl mb-10'>&#127968; Mortgage Simulator</h1>
           {page === 0 ? (
             <>
               <p className='mb-5'>
