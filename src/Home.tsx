@@ -9,16 +9,17 @@ function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [loanAmount, setLoanAmount] = useState(searchParams.get('principle') || 0);
   const [interestRate, setInterestRate] = useState(searchParams.get('interest') || 0);
-  const [repayments, setRepayments] = useState(searchParams.get('repayments') || '');
-  const [repaymentsOverriden, setRepaymentsOverriden] = useState(false);
+  const [repayments, setRepayments] = useState(searchParams.get('repayments') || 0);
+  const [repaymentsOverriden, setRepaymentsOverriden] = useState(!!searchParams.get('repayments'));
   const [repaymentFrequency, setRepaymentFrequency] = useState(searchParams.get('repayment_frequency') || '');
 
-  const calculateRepayments = (): number|string => {
-    if (repayments || repaymentsOverriden) {
-      return repayments;
+  const calculateRepayments = (): number => {
+    console.log(repayments || repaymentsOverriden);
+    if (repayments && repaymentsOverriden) {
+      return +repayments;
     }
     if (!loanAmount || !interestRate || !repaymentFrequency) {
-      return '';
+      return 0;
     }
     
     let repaymentInterval = 12;
@@ -27,8 +28,6 @@ function Home() {
     } else if (repaymentFrequency === 'fortnightly') {
       repaymentInterval = 26;
     }
-    console.log(repaymentFrequency, repaymentInterval);
-
     const principal = +loanAmount;
     const interest = +interestRate / 100 / repaymentInterval;
     const loanYears = 25;
@@ -101,7 +100,8 @@ function Home() {
                 Loan amount
                 <NumberFormat
                   className={`input input-bordered w-full max-w-xs ${submitted && !loanAmount ? 'input-bordered input-error' : ''}`}
-                  thousandSeparator={true} prefix={'$'}
+                  thousandSeparator={true}
+                  prefix={'$'}
                   onValueChange={(value) => {setLoanAmount(value.floatValue!)}}
                   defaultValue={loanAmount || ''}
                 />
@@ -121,6 +121,7 @@ function Home() {
                 <select 
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {setRepaymentFrequency(e.target.value)}}
                   className="select select-bordered w-full max-w-xs"
+                  defaultValue={repaymentFrequency}
                   required
                 >
                   <option value=""></option>
@@ -131,14 +132,18 @@ function Home() {
               </label>
               <label className='label'>
                 Repayments
-                <input
-                  type="number"
-                  placeholder=""
-                  required
+                <NumberFormat
+                  prefix={'$'}
+                  thousandSeparator={true}
+                  isNumericString={true}
                   className="input input-bordered w-full max-w-xs"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {setRepayments(e.target.value)}}
+                  onValueChange={(value, source) => {
+                    if (source.source !== 'prop') {
+                      setRepaymentsOverriden(true);
+                    }
+                    setRepayments(value.floatValue!);
+                  }}
                   value={calculateRepayments()}
-                  onFocus={(e: React.ChangeEvent<HTMLInputElement>) => {setRepaymentsOverriden(true)}}
                 />
               </label>
               <div className="mt-10 flex flex-row justify-between">

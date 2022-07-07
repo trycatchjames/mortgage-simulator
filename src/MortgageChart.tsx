@@ -91,6 +91,7 @@ interface Props {
   scenarios: number;
 }
 
+export {makeSeries};
 export default function MortgageChart(props: Props) {
   return (
     <>

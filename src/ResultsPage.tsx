@@ -1,6 +1,7 @@
 import React from 'react';
 import MortgageChart from './MortgageChart';
 import { useSearchParams, useNavigate } from "react-router-dom";
+import MortgageTable from './MortgageTable';
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -43,6 +44,15 @@ function ResultsPage() {
       </div>
       <div className='m-10'>
         <MortgageChart
+          principle={+principle}
+          interest={+interest}
+          repayments={+repayments}
+          repaymentFrequency={repaymentFrequency}
+          scenarios={+scenarios}
+        />
+      </div>
+      <div className='m-10'>
+        <MortgageTable
           principle={+principle}
           interest={+interest}
           repayments={+repayments}
