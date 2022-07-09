@@ -3,11 +3,6 @@ import MortgageChart from './MortgageChart';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import MortgageTable from './MortgageTable';
 
-interface OverrideObject {
-  [key: number]: number;
-}
-
-
 function ResultsPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
