@@ -34,11 +34,13 @@ export const options = {
   },
 };
 
-const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Number, repaymentFrequency: string): Array<Number> => {
+const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Number, repaymentFrequency: string, interestOverrides: OverrideObject, repaymentOverrides: OverrideObject): Array<Number> => {
 	let balance: Number = totalBorrowed;
 	let days = 0;
   const returnData: Array<Number> = [];
   returnData.push(balance);
+  let currentInterestRate = interestRate;
+  let currentRepaymentAmount = repayAmount;
   
   let repaymentInterval = 30;
   if (repaymentFrequency === 'weekly') { 
@@ -48,10 +50,17 @@ const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Nu
   }
 
   while (balance > 0) {
-    if (days % repaymentInterval === 0) {
-      balance = +balance - repayAmount;
+    const yearKey = returnData.length - 1;
+    if (typeof interestOverrides[yearKey] !== 'undefined') {
+      currentInterestRate = interestOverrides[yearKey];
     }
-    balance = Math.round((+balance + ((+balance * +interestRate / 100) / 365)) * 100) / 100;
+    if (typeof repaymentOverrides[yearKey] !== 'undefined') {
+      currentRepaymentAmount = repaymentOverrides[yearKey];
+    }
+    if (days % repaymentInterval === 0) {
+      balance = +balance - currentRepaymentAmount;
+    }
+    balance = Math.round((+balance + ((+balance * +currentInterestRate / 100) / 365)) * 100) / 100;
     days++;
     if (days % 365 === 0) {
       returnData.push(balance);
@@ -66,9 +75,8 @@ const makeSeries = (repayAmount: number, totalBorrowed: number, interestRate: Nu
 const makeData = (props: Props) => {
   let labels: string[] = [];
   const datasets = [];
-  console.log(props.interest);
   for (let i = 0; i < props.scenarios; i++) {
-    const series = makeSeries(props.repayments, props.principle, props.interest + i, props.repaymentFrequency);
+    const series = makeSeries(props.repayments, props.principle, props.interest + i, props.repaymentFrequency, props.interestOverrides, props.repaymentOverrides);
     labels = series.map((val, index) => ('Year ' + (index + 1)));
     datasets.push({
       label: `${props.interest + i}% Interest Rate`,
@@ -83,12 +91,17 @@ const makeData = (props: Props) => {
   };
 }
 
+interface OverrideObject {
+  [key: number]: number;
+}
 interface Props {
   principle: number;
   repayments: number;
   interest: number;
   repaymentFrequency: string;
   scenarios: number;
+  interestOverrides: OverrideObject;
+  repaymentOverrides: OverrideObject;
 }
 
 export {makeSeries};

@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MortgageChart from './MortgageChart';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import MortgageTable from './MortgageTable';
+
+interface OverrideObject {
+  [key: number]: number;
+}
+
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -11,6 +16,8 @@ function ResultsPage() {
   const repayments = searchParams.get('repayments');
   const repaymentFrequency = searchParams.get('repayment_frequency') || 'fortnightly';
   const scenarios = searchParams.get('scenarios') || 1;
+  const [interestOverrides, setInterestOverrides] = useState({});
+  const [repaymentOverrides, setRepaymentOverrides] = useState({});
   const handleBackButton = () => {
     navigate({
       pathname: '/',
@@ -38,26 +45,28 @@ function ResultsPage() {
           </div>
         </div>
       </div>
-      <div>
-
-      
-      </div>
-      <div className='m-10'>
+      <div className='m-10 max-w-7xl mx-auto'>
         <MortgageChart
           principle={+principle}
           interest={+interest}
           repayments={+repayments}
           repaymentFrequency={repaymentFrequency}
           scenarios={+scenarios}
+          interestOverrides={interestOverrides}
+          repaymentOverrides={repaymentOverrides}
         />
       </div>
-      <div className='m-10'>
+      <div className='m-10  max-w-7xl mx-auto'>
         <MortgageTable
           principle={+principle}
           interest={+interest}
           repayments={+repayments}
           repaymentFrequency={repaymentFrequency}
           scenarios={+scenarios}
+          interestOverrides={interestOverrides}
+          repaymentOverrides={repaymentOverrides}
+          updateInterestOverrides={setInterestOverrides}
+          updateRepaymentOverrides={setRepaymentOverrides}
         />
       </div>
     </div>

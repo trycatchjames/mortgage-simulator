@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Home from './Home';
 import reportWebVitals from './reportWebVitals';
 import {
   HashRouter,
   Routes,
   Route,
 } from "react-router-dom";
-import ResultsPage from './ResultsPage';
+import Home from './Home/Home';
+import ResultsPage from './Results/ResultsPage';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
